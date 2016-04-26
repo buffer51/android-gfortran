@@ -4,7 +4,7 @@
 
 This repository is intended as a tutorial for building the **GNU toolchain on
 Android**, with support for **Fortran**. Prebuilt versions can be found
-in the [Downloads](##Downloads) section.
+in the [Releases](/releases) section.
 
 It is based on my experience building
 [OpenBLAS](https://github.com/xianyi/OpenBLAS) with LAPACK for Android
@@ -136,7 +136,3 @@ the toolchain that was already packaged with the NDK.
 
 For instance, on Linux 64-bit for the AArch64 toolchain, unpack the archive as
 `ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64`.
-
-## Downloads
-
-TODO: To be added.
