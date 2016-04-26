@@ -4,7 +4,7 @@
 
 This repository is intended as a tutorial for building the **GNU toolchain on
 Android**, with support for **Fortran**. Prebuilt versions can be found
-in the [Releases](/releases) section.
+in the [Releases](https://github.com/buffer51/android-gfortran/releases) section.
 
 It is based on my experience building
 [OpenBLAS](https://github.com/xianyi/OpenBLAS) with LAPACK for Android
