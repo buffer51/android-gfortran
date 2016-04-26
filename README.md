@@ -78,7 +78,7 @@ git clone https://android.googlesource.com/toolchain/binutils
 
 #### Add support for Fortran
 
-In `toolchain-src/gcc/build-gcc.sh`, find the line that contains:
+In `toolchain/gcc/build-gcc.sh`, find the line that contains:
 ```
 ENABLE_LANGUAGES="c,c++"
 ```
