@@ -50,8 +50,8 @@ On Debian-based Linux, you can run:
 sudo apt-get install git make gcc g++ m4 texinfo bison flex wget
 ```
 
-**Note:** When building the toolchain for Windows, **mingw-w64** is
-also required.
+**Note:** When building the toolchain for Windows, **mingw-w64** is required.
+For 32-bit, **gcc-multilib** and **g++-multilib** are also needed.
 
 #### Android NDK
 
