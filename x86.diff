@@ -1,0 +1,30 @@
+diff --git a/gcc-4.9/libgfortran/mk-kinds-h.sh b/gcc-4.9/libgfortran/mk-kinds-h.sh
+index 98a95ab..fdbccb0 100755
+--- a/gcc-4.9/libgfortran/mk-kinds-h.sh
++++ b/gcc-4.9/libgfortran/mk-kinds-h.sh
+@@ -51,7 +51,10 @@ echo "use iso_c_binding; print *, c_long_double ; end" > tmq$$.f90
+ long_double_kind=`$compile -S -fdump-parse-tree tmq$$.f90 | grep TRANSFER \
+ 			| sed 's/ *TRANSFER *//'`
+ rm -f tmq$$.*
+-
++echo "use iso_c_binding; print *, c_double ; end" > tmq$$.f90
++double_kind=`$compile -S -fdump-parse-tree tmq$$.f90 | grep TRANSFER \
++			| sed 's/ *TRANSFER *//'`
++rm -f tmq$$.*
+ 
+ for k in $possible_real_kinds; do
+   echo "  real (kind=$k) :: x" > tmp$$.f90
+@@ -66,10 +69,12 @@ for k in $possible_real_kinds; do
+ 	    ctype="__float128"
+ 	    cplxtype="_Complex float __attribute__((mode(TC)))"
+ 	    suffix="q"
+-	  else
++      elif [ $long_double_kind -ne $double_kind ]; then
+ 	    ctype="long double"
+ 	    cplxtype="complex long double"
+ 	    suffix="l"
++      else
++        break;
+ 	  fi ;;
+       *) echo "$0: Unknown type" >&2 ; exit 1 ;;
+     esac

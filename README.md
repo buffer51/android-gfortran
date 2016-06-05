@@ -116,6 +116,11 @@ prebuilt_ndk = 'ndk'
 so that the building script can find the `ndk/platforms` folder
 correctly.
 
+**Note:** When building the x86 or x86_64 toolchains, additional changes are
+required. There is an issue in libgfortran for the x86 and x86_64 targets
+(see [this issue](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=71363)) causing
+an error when building it. See the `x86.diff`.
+
 **Note:** When building the toolchain for Windows,
 you need to change `ndk/build/tools/prebuilt-common.sh` for the MinGW
 wrapper to be found. Find the line that says:
