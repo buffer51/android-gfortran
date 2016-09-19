@@ -15,12 +15,11 @@ and [this Google group](https://groups.google.com/forum/#!msg/android-ndk/QR1qiN
 ## Procedure
 
 The whole process has become fairly easy, thanks to the new Python building
-scripts Google added in NDK r11c. A few modifications are still required,
-and the building process takes time.
+scripts. A few modifications are still required, and the building process takes time.
 
 ### Goals & environment
 
-This tutorial aims at building the **GNU toolchain 4.9** with **Android NDK r11c**.
+This tutorial aims at building the **GNU toolchain 4.9** with **Android NDK r12b**.
 It has been tested on Linux x86_64, but I expect that it should work with
 small changes on other systems supported by the NDK.
 
@@ -35,6 +34,7 @@ same, with a few extra steps detailed along the way.
 #### Requirements
 A few tools are required for building the toolchain, namely:
 - **git**
+- **repo**
 - **make**
 - **gcc**
 - **g++**
@@ -43,11 +43,9 @@ A few tools are required for building the toolchain, namely:
 - **bison**
 - **flex**
 
-(I also use **wget** to download the Android NDK).
-
 On Debian-based Linux, you can run:
 ```
-sudo apt-get install git make gcc g++ m4 texinfo bison flex wget
+sudo apt-get install git repo make gcc g++ m4 texinfo bison flex
 ```
 
 **Note:** When building the toolchain for Windows, **mingw-w64** is required.
@@ -55,37 +53,18 @@ For 32-bit, **gcc-multilib** and **g++-multilib** are also needed.
 
 #### Android NDK
 
-Download the Android NDK r11c from Google, and extract it.
-It is best to rename the folder `ndk/` for building scripts to work
-out-of-the-box.
+The easiest way to setup all required sources is to follow the official steps
+([found here](https://android.googlesource.com/toolchain/gcc/+/master/README.md)).
+
+In this repository, call:
 ```
-wget http://dl.google.com/android/repository/android-ndk-r11c-linux-x86_64.zip
-unzip android-ndk-r11c-linux-x86_64.zip
-rm android-ndk-r11c-linux-x86_64.zip
-mv android-ndk-r11c ndk
+repo init -u https://android.googlesource.com/platform/manifest -b gcc
 ```
 
-#### GNU toolchain
+You can then use `repo sync` to clone all parts of the toolchain,
+and `repo forall -c git checkout ndk-r12b` to checkout the r12b version.
 
-The next step is to download the GNU toolchain components from Google
-repositories. We'll clone them in a folder called `toolchain/`.
-```
-mkdir toolchain && cd toolchain
-git clone -b ndk-r11c https://android.googlesource.com/toolchain/gcc
-git clone -b ndk-r11c https://android.googlesource.com/toolchain/build
-git clone -b ndk-r11c https://android.googlesource.com/toolchain/gmp
-git clone -b ndk-r11c https://android.googlesource.com/toolchain/gdb
-git clone -b ndk-r11c https://android.googlesource.com/toolchain/mpc
-git clone -b ndk-r11c https://android.googlesource.com/toolchain/mpfr
-git clone -b ndk-r11c https://android.googlesource.com/toolchain/expat
-git clone -b ndk-r11c https://android.googlesource.com/toolchain/ppl
-git clone -b ndk-r11c https://android.googlesource.com/toolchain/cloog
-git clone -b ndk-r11c https://android.googlesource.com/toolchain/isl
-git clone -b ndk-r11c https://android.googlesource.com/toolchain/sed
-git clone -b ndk-r11c https://android.googlesource.com/toolchain/binutils
-```
-
-#### Add support for Fortran
+#### Adding support for Fortran
 
 In `toolchain/gcc/build-gcc.sh`, find the line that contains:
 ```
@@ -104,44 +83,18 @@ as_fn_append ac_func_list " ttyname_r"
 
 #### Building
 
-The last change to do before building everything is in
-`ndk/build/lib/build_support.py`. Change the line
+If you are planning to build the ARM or AArch64 toolchains for Linux 64-bit
+or Windows 32-bit, that shoule be sufficient.
+Simply call `build.py` under `toolchain/gcc` which will take care of everything.
+You can specify which toolchain to build. For instance:
 ```
-prebuilt_ndk = 'prebuilts/ndk/current'
+./build.py --toolchain arm-linux-androideabi
 ```
-to
-```
-prebuilt_ndk = 'ndk'
-```
-so that the building script can find the `ndk/platforms` folder
-correctly.
+See `./build.py -h` for possible values.
+If nothing is specified, it will build all of them.
 
-**Note:** When building the x86 or x86_64 toolchains, additional changes are
-required. There is an issue in libgfortran for the x86 and x86_64 targets
-(see [this issue](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=71363)) causing
-an error when building it. See the `x86.diff`.
-
-**Note:** When building the toolchain for Windows,
-you need to change `ndk/build/tools/prebuilt-common.sh` for the MinGW
-wrapper to be found. Find the line that says:
-```
-# generate wrappers for BUILD toolchain
-```
-and replace the section that follows by:
-```
-LEGACY_TOOLCHAIN_PREFIX="/usr/bin/x86_64-linux-gnu-"
-$NDK_BUILDTOOLS_PATH/gen-toolchain-wrapper.sh --src-prefix=i386-linux-gnu- \
-        --cflags="-m32" --cxxflags="-m32" --ldflags="-m elf_i386" --asflags="--32" \
-        --dst-prefix="$LEGACY_TOOLCHAIN_PREFIX" "$CROSS_WRAP_DIR"
-$NDK_BUILDTOOLS_PATH/gen-toolchain-wrapper.sh --src-prefix=i386-pc-linux-gnu- \
-        --cflags="-m32" --cxxflags="-m32" --ldflags="-m elf_i386" --asflags="--32" \
-        --dst-prefix="$LEGACY_TOOLCHAIN_PREFIX" "$CROSS_WRAP_DIR"
-# 64-bit BUILD toolchain.  libbfd is still built in 32-bit.
-$NDK_BUILDTOOLS_PATH/gen-toolchain-wrapper.sh --src-prefix=x86_64-linux-gnu- \
-        --dst-prefix="$LEGACY_TOOLCHAIN_PREFIX" "$CROSS_WRAP_DIR"
-$NDK_BUILDTOOLS_PATH/gen-toolchain-wrapper.sh --src-prefix=x86_64-pc-linux-gnu- \
-        --dst-prefix="$LEGACY_TOOLCHAIN_PREFIX" "$CROSS_WRAP_DIR"
-```
+When building the toolchain for Windows, add `--host windows`
+(or `--host windows64` for 64-bit).
 
 **Note:** If you want to build **standalone toolchains**
 (i.e. you're not using `ndk-build`), there is one extra step.
@@ -154,16 +107,24 @@ and
 rm -rf $TOOLCHAIN_INSTALL_PATH/sysroot
 ```
 
-Now you can run `build.py` under `toolchain/gcc` which will take care of everything.
-You can specify which toolchain to build. For instance:
-```
-./build.py --toolchain arm-linux-androideabi
-```
-See `./build.py -h` for possible values.
-If nothing is specified, it will build all of them.
+#### Other targets / hosts
 
-**Note:** When building the toolchain for Windows, add `--host windows`
-(or `--host windows64` for 64-bit).
+When building the **x86 or x86_64 toolchains**, additional changes are
+required. There is an issue in libgfortran for the x86 and x86_64 targets
+(see #2 and [this issue](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=71363))
+causing an error when building it. See the `x86.diff`.
+
+When building the toolchain for **Windows 64-bit**,
+you need to change `toolchain/binutils/binutils-2.25/gold/aarch64.cc`
+(see #1 and [this issue](https://sourceware.org/ml/binutils-cvs/2015-07/msg00148.html)).
+Find line 2028 that says:
+```
+Insntype adr_insn = adrp_insn & ((1 << 31) - 1);
+```
+and replace it by:
+```
+Insntype adr_insn = adrp_insn & ((1u << 31) - 1);
+```
 
 ### Deploying
 
