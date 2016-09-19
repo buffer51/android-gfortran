@@ -96,17 +96,6 @@ If nothing is specified, it will build all of them.
 When building the toolchain for Windows, add `--host windows`
 (or `--host windows64` for 64-bit).
 
-**Note:** If you want to build **standalone toolchains**
-(i.e. you're not using `ndk-build`), there is one extra step.
-In `toolchain/gcc/build-gcc.sh`, comment out two lines:
-```
-run rm -rf "$TOOLCHAIN_INSTALL_PATH/sysroot"
-```
-and
-```
-rm -rf $TOOLCHAIN_INSTALL_PATH/sysroot
-```
-
 #### Other targets / hosts
 
 When building the **x86 or x86_64 toolchains**, additional changes are
@@ -128,12 +117,17 @@ Insntype adr_insn = adrp_insn & ((1u << 31) - 1);
 
 ### Deploying
 
-If you built a standalone toolchain, just extract the archive. You'll probably
-want to add `$(TOOLCHAIN)/bin` to your path.
+The generated toolchain are not standalone as few includes are packaged.
+This is because NDK lets you choose which platform version and which STL
+you want to use.
 
-Otherwise, to allow `ndk-build` to use your new toolchain, extract the archive
-under `ndk/toolchains/$(TOOLCHAIN)/prebuilt/$(HOST_ARCH)`. Don't forget to back up
-the toolchain that was already packaged with the NDK.
+To allow `ndk-build` to use your new toolchain, extract the archive
+under `ndk/toolchains/$(TOOLCHAIN)/prebuilt/$(HOST_ARCH)`.
+Don't forget to back up the toolchain that was already packaged with the NDK.
 
 For instance, on Linux x86_64 for the AArch64 toolchain, unpack the archive as
 `ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64`.
+
+If you want to create a **standalone toolchains** (i.e. you're not
+using `ndk-build`), do the previous step, and then follow
+[this guide](https://developer.android.com/ndk/guides/standalone_toolchain.html).
