@@ -126,6 +126,8 @@ you want to use.
 To allow `ndk-build` to use your new toolchain, extract the archive
 under `ndk/toolchains/$(TOOLCHAIN)/prebuilt/$(HOST_ARCH)`.
 Don't forget to back up the toolchain that was already packaged with the NDK.
+**Warning:** This refers to the full NDK downloadable from Google,
+not the directory created by repo.
 
 For instance, on Linux x86_64 for the AArch64 toolchain, unpack the archive as
 `ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64`.
