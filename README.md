@@ -100,12 +100,14 @@ When building the toolchain for Windows, add `--host windows`
 
 When building the **x86 or x86_64 toolchains**, additional changes are
 required. There is an issue in libgfortran for the x86 and x86_64 targets
-(see #2 and [this issue](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=71363))
+(see [#2](https://github.com/buffer51/android-gfortran/issues/2)
+and [this issue](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=71363))
 causing an error when building it. See the `x86.diff`.
 
 When building the toolchain for **Windows 64-bit**,
 you need to change `toolchain/binutils/binutils-2.25/gold/aarch64.cc`
-(see #1 and [this issue](https://sourceware.org/ml/binutils-cvs/2015-07/msg00148.html)).
+(see [#1](https://github.com/buffer51/android-gfortran/issues/1)
+and [this issue](https://sourceware.org/ml/binutils-cvs/2015-07/msg00148.html)).
 Find line 2028 that says:
 ```
 Insntype adr_insn = adrp_insn & ((1 << 31) - 1);
