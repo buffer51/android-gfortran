@@ -75,12 +75,6 @@ and replace it with:
 ENABLE_LANGUAGES="c,c++,fortran"
 ```
 
-To prevent a link-time error for `ttyname_r`, disable it in
-`toolchain/gcc/gcc-4.9/libgfortran/configure` by commenting out the line:
-```
-as_fn_append ac_func_list " ttyname_r"
-```
-
 #### Building
 
 If you are planning to build the ARM or AArch64 toolchains for Linux 64-bit
