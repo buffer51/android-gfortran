@@ -129,3 +129,12 @@ For instance, on Linux x86_64 for the AArch64 toolchain, unpack the archive as
 If you want to create a **standalone toolchains** (i.e. you're not
 using `ndk-build`), do the previous step, and then follow
 [this guide](https://developer.android.com/ndk/guides/standalone_toolchain.html).
+You will want to specify which API level you want to use. It is safe to always
+use the latest available, even if you are targetting older devices.
+
+**Warning:** There is currently (NDK r12b) an issue with a missing implementation
+of `bsd_signal`(see [here](https://github.com/android-ndk/ndk/issues/160),
+[here](http://stackoverflow.com/questions/36746904/android-linker-undefined-reference-to-bsd-signal)
+and finaly [#5](https://github.com/buffer51/android-gfortran/issues/5)).
+If you plan on building a library that uses that function
+(e.g. OpenSSL, OpenBLAS with LAPACK, ...), use **API level 19**.
