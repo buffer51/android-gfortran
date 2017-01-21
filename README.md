@@ -19,9 +19,12 @@ scripts. A few modifications are still required, and the building process takes 
 
 ### Goals & environment
 
-This tutorial aims at building the **GNU toolchain 4.9** with **Android NDK r12b**.
+This tutorial aims at building the **GNU toolchain 4.9** with **Android NDK r13b**.
 It has been tested on Linux x86_64, but I expect that it should work with
 small changes on other systems supported by the NDK.
+
+Past versions of this README covered building with **Android NDK r11c & r12b**.
+Please refer to those for special instructions.
 
 ### Windows
 
@@ -62,7 +65,8 @@ repo init -u https://android.googlesource.com/platform/manifest -b gcc
 ```
 
 You can then use `repo sync` to clone all parts of the toolchain,
-and `repo forall -c git checkout ndk-r12b` to checkout the r12b version.
+and `repo forall -c git checkout ndk-r13-release` to checkout
+the latest r13 version.
 
 #### Adding support for Fortran
 
@@ -131,10 +135,3 @@ using `ndk-build`), do the previous step, and then follow
 [this guide](https://developer.android.com/ndk/guides/standalone_toolchain.html).
 You will want to specify which API level you want to use. It is safe to always
 use the latest available, even if you are targetting older devices.
-
-**Warning:** There is currently (NDK r12b) an issue with a missing implementation
-of `bsd_signal`(see [here](https://github.com/android-ndk/ndk/issues/160),
-[here](http://stackoverflow.com/questions/36746904/android-linker-undefined-reference-to-bsd-signal)
-and finaly [#5](https://github.com/buffer51/android-gfortran/issues/5)).
-If you plan on building a library that uses that function
-(e.g. OpenSSL, OpenBLAS with LAPACK, ...), use **API level 19**.
