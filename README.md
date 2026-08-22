@@ -1,6 +1,6 @@
 # android-gfortran
 
-## Introduction
+## Introduction
 
 This repository is intended as a tutorial for building the **GNU toolchain on
 Android**, with support for **Fortran**. Prebuilt versions can be found
